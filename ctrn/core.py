@@ -44,7 +44,7 @@ def search_(request, coll=None):
     if request.method == 'GET':
         compound = request.GET.get('compound')
         value = compound["value"]
-        query = {"compound": {"$regex": "\w*{}+".format(value)}}
+        query = {"compound": {"$regex": "\w*{}\w*".format(value)}}
         properties = request.GET.get('properties')
         for pi in properties:
             logic = pi["logic"]

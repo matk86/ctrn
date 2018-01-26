@@ -20,7 +20,7 @@ def insert_to_mongo(filename, coll=None):
         for i, row in enumerate(reader):
             if i == 0:
                 continue
-            d = {"compound": row[0].lower(),
+            d = {"compound": row[0],
                  row[1].lower(): row[2],
                  row[3].lower(): row[4].lower()}
             coll.insert_one(d)

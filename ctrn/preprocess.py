@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import csv
-from utils import connect_to_mongo
+from .utils import connect_to_mongo
 
 
 @connect_to_mongo
@@ -21,6 +21,6 @@ def insert_to_mongo(filename, coll=None):
             if i == 0:
                 continue
             d = {"compound": row[0].lower(),
-                 row[1].lower(): float(row[2]),
+                 row[1].lower(): row[2],
                  row[3].lower(): row[4].lower()}
             coll.insert_one(d)

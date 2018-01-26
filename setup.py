@@ -16,7 +16,7 @@ if __name__ == "__main__":
         author='Kiran Mathew',
         author_email='kmathew@lbl.gov',
         zip_safe=False,
-        install_requires=['pymongo>=3.6.0'],
+        install_requires=['pymongo>=3.6.0', 'pyyaml>=3.12'],
         classifiers=["Programming Language :: Python :: 3",
                      "Programming Language :: Python :: 3.6",
                      'Operating System :: OS Independent',

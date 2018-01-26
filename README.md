@@ -18,4 +18,6 @@ Usage:
 
 4. The aforementioned functions in the core.py module essentially constitute the 'views' in a web app(Note: in this pacakge a dummy response instead of http response is used as placeholder). 
 
-5. tests available in the ctrn/tests folder. The package in also integrated with CircleCI.
+5. Tests available in the ctrn/tests folder. To run tests: 'pip install nose' and run 'nosetests -v ctrn'
+
+6. The package in also integrated with CircleCI.

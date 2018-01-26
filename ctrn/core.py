@@ -1,17 +1,14 @@
 # coding: utf-8
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from utils import connect_to_mongo, dummy_response
+from .utils import connect_to_mongo, DummyResponse
 
 """
-This module defines the functions for adding and searching compunds to the database.
-From a django app perspective these functions constitute the contents of the views.py module.
+This module defines the functions for adding and searching compounds to the database.
+From a web app perspective these functions(the decorated ones at the bottom) constitute the 'views'.
 """
 
 
-@connect_to_mongo
-def add(request, coll=None):
+def add_(request, coll=None):
     """
     Add compound to the database.
 
@@ -25,15 +22,14 @@ def add(request, coll=None):
     if request.method == 'POST':
         compound = request.POST.get('compound')
         properties = request.POST.get('properties')
+        d = {"compound": compound}
         for pi in properties:
-            d = {"compound": compound.lower()}
             d[pi["propertyName"].lower()] = pi["propertyValue"].lower()
-            coll.insert_one(d)
-            return dummy_response("inserted")
+        coll.insert_one(d)
+        return DummyResponse(request)
 
 
-@connect_to_mongo
-def search(request, coll=None):
+def search_(request, coll=None):
     """
     Add compound to the database.
 
@@ -47,13 +43,23 @@ def search(request, coll=None):
     results = None
     if request.method == 'GET':
         compound = request.GET.get('compound')
-        value = compound["value"].lower()
+        value = compound["value"]
         query = {"compound": {"$regex": "\w*{}+".format(value)}}
         properties = request.GET.get('properties')
         for pi in properties:
             logic = pi["logic"]
-            value = float(pi["value"]) if logic not in ["eq"] else pi["value"]
-            query[pi["name"].lower()] = {"${}".format(): value}
-        results = {"results": list(coll.find(query))}
+            value = pi["value"].lower() #float(pi["value"]) if logic not in ["eq"] else
+            query[pi["name"].lower()] = {"${}".format(logic): value}
 
-    return dummy_response(results)
+        results = {"results": []}
+        for d in coll.find(query, {"_id": 0}):
+            dt = {"compound": d.pop("compound"), "properties": []}
+            for k, v in d.items():
+                dt["properties"].append({"propertyName": k, "propertyValue": v})
+            results["results"].append(dt)
+
+    return DummyResponse(results)
+
+
+add = connect_to_mongo(add_)
+search = connect_to_mongo(search_)
